@@ -14,6 +14,19 @@ function swallow_shortcode_list_travels() {
 }
 add_shortcode('swallow_travels', 'swallow_shortcode_list_travels');
 
+// Swallow Settings
+function register_my_setting() {
+    $args = array(
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_title',
+            'default' => 'travel',
+            );
+    register_setting( 'swallow_options_group', 'swallow_travels_slug', $args );
+}
+add_action( 'admin_init', 'register_my_setting' );
+
+
+
 // Travel Post Type
 // Register Custom Post Type
 function swallow_travel_post_type() {
@@ -48,7 +61,7 @@ function swallow_travel_post_type() {
 		'filter_items_list'     => 'Filter items list',
 	);
 	$rewrite = array(
-		'slug'                  => 'travel',
+		'slug'                  => get_option('swallow_travels_slug'),
 		'with_front'            => true,
 		'pages'                 => true,
 		'feeds'                 => true,
@@ -68,7 +81,7 @@ function swallow_travel_post_type() {
 		'show_in_admin_bar'     => true,
 		'show_in_nav_menus'     => true,
 		'can_export'            => true,
-		'has_archive'           => 'travel',
+		'has_archive'           => get_option('swallow_travels_archive'),
 		'exclude_from_search'   => false,
 		'publicly_queryable'    => true,
 		'rewrite'               => $rewrite,
@@ -100,7 +113,7 @@ function swallow_travel_post_type() {
 
 
   	echo '<p><label for="type">Tipo de viaje</label> <input type="text" name="type" id="type" value="'. $type .'" /></p>';
-  	echo '<p><label for="start_datetime">Web de referencia 2</label> <input type="datetime-local" name="start_datetime" id="start_datetime" value="'. $start_datetime .'" /></p>';
+  	echo '<p><label for="start_datetime">Fecha del viaje</label> <input type="datetime-local" name="start_datetime" id="start_datetime" value="'. $start_datetime .'" /></p>';
   }
 
   // Save Meta Boxes
@@ -114,10 +127,18 @@ function swallow_travel_post_type() {
 
 
   	// Guardamos...
-  	if( isset( $_POST['web1'] ) )
-  	  update_post_meta( $post_id, 'web1', wp_kses( $_POST['web1'] ) );
-  	if( isset( $_POST['web2'] ) )
-  	  update_post_meta( $post_id, 'web2', wp_kses( $_POST['web2'] ) );
+  	if( isset( $_POST['type'] ) )
+  	  update_post_meta( $post_id, 'type', wp_kses( $_POST['type'] ) );
+  	if( isset( $_POST['start_datetime'] ) )
+  	  update_post_meta( $post_id, 'start_datetime', wp_kses( $_POST['start_datetime'] ) );
+    if( isset( $_POST['initial_place'] ) )
+      update_post_meta( $post_id, 'initial_place', wp_kses( $_POST['initial_place'] ) );
+    if( isset( $_POST['destination_place'] ) )
+  	  update_post_meta( $post_id, 'destination_place', wp_kses( $_POST['destination_place'] ) );
+    if( isset( $_POST['visibility'] ) )
+  	  update_post_meta( $post_id, 'visibility', wp_kses( $_POST['visibility'] ) );
+    if( isset( $_POST['seats'] ) )
+      update_post_meta( $post_id, 'seats', wp_kses( $_POST['seats'] ) );
   }
 
 
